@@ -42,7 +42,7 @@ app.use('/posts', postRoutes);
 
 //conectar db
 
-mongoose.connect('process.env.MONGODB_URI', { useNewUrlParser: true, useCreateIndex: true}, ( err ) => {
+mongoose.connect(MONGO_URI, { useNewUrlParser: true, useCreateIndex: true}, ( err ) => {
     if ( err ) throw err;
     
     console.log('Base de datos ONLINE')
