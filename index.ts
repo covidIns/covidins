@@ -17,7 +17,8 @@ app.use( bodyParser.urlencoded({ extended: true }) );
 app.use( bodyParser.json() );
 
 //configurar Cors
-app.use( cors({ origin: true, credentials: true }));
+/* app.use( cors({ origin: true, credentials: true })); */
+app.use(cors({ origin: 'http://localhost:8100' }));
 
 //settings
 app.set('port', process.env.PORT || 4000);
