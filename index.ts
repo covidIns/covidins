@@ -1,4 +1,4 @@
-const express = require('express');
+import express from 'express';
 /* import Server from './classes/server'; */
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
@@ -20,7 +20,7 @@ app.use( bodyParser.json() );
 
 //configurar Cors
 /* app.use( cors({ origin: true, credentials: true })); */
-app.use(cors({ origin: '*' }));
+app.use(cors());
 
 //settings
 app.set('port', process.env.PORT || 4000);

@@ -1,9 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function(mod) {
+var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express = require('express');
+const express_1 = __importDefault(require("express"));
 /* import Server from './classes/server'; */
 const mongoose_1 = __importDefault(require("mongoose"));
 const body_parser_1 = __importDefault(require("body-parser"));
@@ -12,13 +12,13 @@ const usuario_1 = __importDefault(require("./routes/usuario"));
 const post_routes_1 = __importDefault(require("./routes/post.routes"));
 /* const server = new Server(); */
 // Initializations
-const app = express();
+const app = express_1.default();
 //Body Parser
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use(body_parser_1.default.json());
 //configurar Cors
 /* app.use( cors({ origin: true, credentials: true })); */
-app.use(cors_1.default({ origin: '*' }));
+app.use(cors_1.default());
 //settings
 app.set('port', process.env.PORT || 4000);
 //Rutas de mi app
@@ -37,4 +37,4 @@ app.listen(app.get('port'), () => {
 });
 /* server.start( () => {
     console.log(`Servidor corriendo en puerto 3000`);
-}) */
+}) */ 
