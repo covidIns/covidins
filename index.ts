@@ -1,33 +1,45 @@
-import Server from './classes/server';
+const express = require('express');
+/* import Server from './classes/server'; */
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 
 import userRoutes from './routes/usuario';
 import postRoutes from './routes/post.routes';
-const server = new Server();
+/* const server = new Server(); */
 
+
+// Initializations
+const app = express();
 
 //Body Parser
-server.app.use( bodyParser.urlencoded({ extended: true}) );
-server.app.use( bodyParser.json() );
+app.use( bodyParser.urlencoded({ extended: true }) );
+app.use( bodyParser.json() );
 
 //configurar Cors
-server.app.use( cors({ origin: true, credentials: true }));
+app.use( cors({ origin: true, credentials: true }));
+
+//settings
+app.set('port', process.env.PORT || 4000);
 
 //Rutas de mi app
-server.app.use('/user', userRoutes);
-server.app.use('/posts', postRoutes);
+app.use('/user', userRoutes);
+app.use('/posts', postRoutes);
 
 //conectar db
 
-mongoose.connect('mongodb://localhost:27017/covidGen', { useNewUrlParser: true, useCreateIndex: true}, ( err ) => {
+mongoose.connect('process.env.MONGODB_URI', { useNewUrlParser: true, useCreateIndex: true}, ( err ) => {
     if ( err ) throw err;
     
     console.log('Base de datos ONLINE')
 })
 
 //levantar express
-server.start( () => {
+
+// start the server
+app.listen(app.get('port'), () => {
+    console.log(`Server on port ${app.get('port')}`);
+});
+/* server.start( () => {
     console.log(`Servidor corriendo en puerto 3000`);
-})
+}) */
