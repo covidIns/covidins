@@ -1,5 +1,5 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
+var __importDefault = (this && this.__importDefault) || function(mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -18,7 +18,7 @@ app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use(body_parser_1.default.json());
 //configurar Cors
 /* app.use( cors({ origin: true, credentials: true })); */
-app.use(cors_1.default({ origin: 'http://localhost:8100' }));
+app.use(cors_1.default({ origin: '*' }));
 //settings
 app.set('port', process.env.PORT || 4000);
 //Rutas de mi app
@@ -37,4 +37,4 @@ app.listen(app.get('port'), () => {
 });
 /* server.start( () => {
     console.log(`Servidor corriendo en puerto 3000`);
-}) */ 
+}) */
