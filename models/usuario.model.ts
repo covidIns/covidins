@@ -29,7 +29,12 @@ const usuarioSchema = new Schema({
 
     unidadAcademica: {
         type: String,
-        equired: [ true, 'La unidad académica es requerida']
+        required: [ true, 'La unidad académica es requerida']
+    },
+
+    active: {
+        type: String,
+        default: false
     }
     
 
@@ -54,7 +59,8 @@ interface IUsuario extends Document {
     password: string;
     roll: string;
     avatar: string;
-    unidadAcademica: string
+    unidadAcademica: string;
+    active: string
 
     compararPassword(password: string): boolean;
 }

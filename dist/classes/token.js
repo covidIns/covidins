@@ -12,7 +12,24 @@ let Token = /** @class */ (() => {
                 usuario: payload
             }, this.seed, { expiresIn: this.caducidad });
         }
+        static getJwtTokenRegistro(payload) {
+            return jsonwebtoken_1.default.sign({
+                usuario: payload
+            }, this.seed, { expiresIn: this.caducidadTokenRegistro });
+        }
         static comprobarToken(userToken) {
+            return new Promise((resolve, reject) => {
+                jsonwebtoken_1.default.verify(userToken, this.seed, (err, decoded) => {
+                    if (err) {
+                        reject();
+                    }
+                    else {
+                        resolve(decoded);
+                    }
+                });
+            });
+        }
+        static comprobarTokenRegistro(userToken) {
             return new Promise((resolve, reject) => {
                 jsonwebtoken_1.default.verify(userToken, this.seed, (err, decoded) => {
                     if (err) {
@@ -27,6 +44,7 @@ let Token = /** @class */ (() => {
     }
     Token.seed = 'este-es-el-seed-de-mi-app-secreto';
     Token.caducidad = '5d';
+    Token.caducidadTokenRegistro = '45m';
     return Token;
 })();
 exports.default = Token;

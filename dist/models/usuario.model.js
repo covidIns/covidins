@@ -30,7 +30,11 @@ const usuarioSchema = new mongoose_1.Schema({
     },
     unidadAcademica: {
         type: String,
-        equired: [true, 'La unidad académica es requerida']
+        required: [true, 'La unidad académica es requerida']
+    },
+    active: {
+        type: String,
+        default: false
     }
 });
 usuarioSchema.method('compararPassword', function (password = '') {
