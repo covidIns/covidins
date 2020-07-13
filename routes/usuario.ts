@@ -115,10 +115,11 @@ userRoutes.post('/create', ( req: Request, res: Response ) => {
 
 //crearNuevoAdministrador
 userRoutes.post('/createAdmin',(req: any, res: Response ) => {
-    const admin = req.body.correo;
+    const body = req.body;
+    body.email = req.email
 
 
-    Administradores.create( admin ).then(adminDB => {
+    Administradores.create( body ).then(adminDB => {
         res.json({
             ok: true,
             post: adminDB
