@@ -91,7 +91,7 @@ userRoutes.post('/create', (req, res) => {
 });
 //crearNuevoAdministrador
 userRoutes.post('/createAdmin', (req, res) => {
-    const admin = req.body;
+    const admin = req.body.correo;
     administradores_model_1.Administradores.create(admin).then(adminDB => {
         res.json({
             ok: true,
