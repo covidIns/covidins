@@ -14,7 +14,7 @@ let Token = /** @class */ (() => {
         }
         static getJwtTokenRegistro(payload) {
             return jsonwebtoken_1.default.sign({
-                usuario: payload
+                hash: payload
             }, this.seed, { expiresIn: this.caducidadTokenRegistro });
         }
         static comprobarToken(userToken) {

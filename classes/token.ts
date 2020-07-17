@@ -18,7 +18,7 @@ export default class Token {
 
     static getJwtTokenRegistro( payload: any ): string {
         return jwt.sign({
-            usuario: payload
+            hash: payload
         }, this.seed, { expiresIn: this.caducidadTokenRegistro });
 
     }
@@ -35,8 +35,6 @@ export default class Token {
                 } else {
                     resolve( decoded );
                 }
-    
-    
             })
 
         });

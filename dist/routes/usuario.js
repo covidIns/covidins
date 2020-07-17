@@ -53,10 +53,11 @@ userRoutes.post('/create', (req, res) => {
         if (!user) {
             res.json({
                 ok: false,
-                mensaje: 'No es un usuario permitido'
+                mensaje: 'El usuario no está prmitido que se registre app privada'
             });
         }
         else {
+            const hash = Math.floor((Math.random() * 1548596) + 12569874523658);
             const user = {
                 nombre: req.body.nombre,
                 email: req.body.email,
@@ -64,18 +65,20 @@ userRoutes.post('/create', (req, res) => {
                 avatar: req.body.avatar,
                 roll: req.body.roll,
                 unidadAcademica: req.body.unidadAcademica,
-                active: req.body.active
+                active: req.body.active,
+                hashTokenRegistro: hash
             };
             usuario_model_1.Usuario.create(user).then(userDB => {
-                const tokenUser = token_1.default.getJwtToken({
+                const tokenUser = {
                     _id: userDB._id,
                     nombre: userDB.nombre,
                     email: userDB.email,
                     avatar: userDB.avatar,
                     roll: userDB.roll,
                     unidadAcademica: userDB.unidadAcademica,
-                    active: userDB.active
-                });
+                    active: userDB.active,
+                    hashTokenRegistro: userDB.hashTokenRegistro
+                };
                 res.json({
                     ok: true,
                     token: tokenUser
@@ -94,9 +97,12 @@ userRoutes.post('/createAdmin', (req, res) => {
     const body = req.body;
     body.email = req.email;
     administradores_model_1.Administradores.create(body).then(adminDB => {
+        const email = {
+            email: adminDB.email
+        };
         res.json({
             ok: true,
-            post: adminDB
+            email
         });
     }).catch(err => {
         res.json({

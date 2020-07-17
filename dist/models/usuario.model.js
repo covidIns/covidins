@@ -35,6 +35,9 @@ const usuarioSchema = new mongoose_1.Schema({
     active: {
         type: String,
         default: false
+    },
+    hashTokenRegistro: {
+        type: Number,
     }
 });
 usuarioSchema.method('compararPassword', function (password = '') {

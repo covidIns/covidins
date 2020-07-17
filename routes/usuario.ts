@@ -1,11 +1,15 @@
 import { Router, Request, Response, response } from 'express';
 import { Usuario } from '../models/usuario.model';
 import { Administradores } from '../models/administradores.model';
+
+import nodemailer from 'nodemailer'
 import bcrypt from 'bcrypt';
 import Token from '../classes/token';
 import { verificaToken } from '../middlewares/autenticación';
 
 const userRoutes = Router();
+
+
 
 
 // Login
@@ -65,9 +69,11 @@ userRoutes.post('/create', ( req: Request, res: Response ) => {
         if(!user){
             res.json({
                 ok: false,
-                mensaje: 'No es un usuario permitido'
+                mensaje: 'El usuario no está prmitido que se registre app privada'
             })
         } else {
+
+            const hash = Math.floor((Math.random() *1548596) + 12569874523658)
 
             const user = {
                 nombre   : req.body.nombre,
@@ -76,20 +82,23 @@ userRoutes.post('/create', ( req: Request, res: Response ) => {
                 avatar   : req.body.avatar,
                 roll     : req.body.roll,
                 unidadAcademica: req.body.unidadAcademica,
-                active: req.body.active
+                active: req.body.active,
+                hashTokenRegistro: hash
+                
             };
         
             Usuario.create( user ).then( userDB => {
         
-                const tokenUser = Token.getJwtToken({
+                const tokenUser = {
                     _id: userDB._id,
                     nombre: userDB.nombre,
                     email: userDB.email,
                     avatar: userDB.avatar,
                     roll: userDB.roll,
                     unidadAcademica: userDB.unidadAcademica,
-                    active: userDB.active
-                });
+                    active: userDB.active,
+                    hashTokenRegistro: userDB.hashTokenRegistro
+                };
         
                 res.json({
                     ok: true,
@@ -106,11 +115,6 @@ userRoutes.post('/create', ( req: Request, res: Response ) => {
         }
 
     })
-
-
-
-
-
 });
 
 //crearNuevoAdministrador
@@ -120,9 +124,14 @@ userRoutes.post('/createAdmin',(req: any, res: Response ) => {
 
 
     Administradores.create( body ).then(adminDB => {
+
+        const email = {
+            email: adminDB.email
+        }
+
         res.json({
             ok: true,
-            post: adminDB
+            email
         })
         
     }).catch (err => {
