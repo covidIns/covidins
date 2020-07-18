@@ -7,7 +7,55 @@ import bcrypt from 'bcrypt';
 import Token from '../classes/token';
 import { verificaToken } from '../middlewares/autenticación';
 
+require('dotenv').config();
+
 const userRoutes = Router();
+
+
+userRoutes.post('/send-email', (req, res) => {
+    let transporter = nodemailer.createTransport({
+        pool: true,
+        service: 'Gmail',
+        auth: {
+            type:'OAuth2',
+            user: process.env.EMAIL,
+            /* accessToken: 'ya29.a0AfH6SMCZcnrhhGOswkqxZ7eGwopCjcRhOnOSBoG-G9NHMVnO2dcanVtDLjCT5bOL-i4uWM5w0eVu_bS5MdaE7LS5H3KsZVdc-P5DzgZ9ZX2o5UDHfF5M2P9AOrvFlZ8lACZrFzuOj6GfRfmjvOWXnfmoz1fQorWi3ZY',           
+            expires: 1594998282749 + 60000, */
+            refreshToken: process.env.EMAIL_REFRESH_TOKEN,
+            clientId: process.env.EMAIL_CLIENT_ID,
+            clientSecret: process.env.EMAIL_CLIENT_SECRET,
+            /* accessUrl: 'https://oauth2.googleapis.com/token', */
+
+        }
+
+    });
+
+    let mailOptions = {
+        from: process.env.EMAIL,
+        to: 'marcosmatiaslopez.2018@gmail.com',
+        subject: 'Verificación de Email',
+        text: 'Por favor haga click en el siguiente enlace para completar el registro'
+    }
+
+    transporter.verify((error, success) => {
+        if(error) return console.log(error)
+        console.log('Server is ready to take our message', success)
+        transporter.on('token', token => {
+            console.log('A new access token was generated');
+            console.log('User: %s', token.user);
+            console.log('Access Token: %s', token.accessToken);
+            console.log('Expires: %s', new Date(token.expires));
+        });
+    })
+
+    transporter.sendMail(mailOptions, function(err, data) {
+        if (err) {
+            console.log('Error Occurs', err);
+        } else {
+            console.log('Email sent!!!');
+        }
+    });
+})
 
 
 
