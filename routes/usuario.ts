@@ -9,10 +9,14 @@ import { verificaToken } from '../middlewares/autenticación';
 
 require('dotenv').config();
 
+
 const userRoutes = Router();
 
+userRoutes.post('/prueba', (req, res) => {
+    console.log('esta es una prueba');
+})
 
-userRoutes.post('/send-email', (req, res) => {
+userRoutes.post('/send', (req, res) => {
     let transporter = nodemailer.createTransport({
         pool: true,
         service: 'Gmail',
@@ -166,10 +170,11 @@ userRoutes.post('/create', ( req: Request, res: Response ) => {
 });
 
 //crearNuevoAdministrador
-userRoutes.post('/createAdmin',(req: any, res: Response ) => {
-    const body = req.body;
-    body.email = req.email
-
+userRoutes.post('/createAdmin',(req: Request, res: Response ) => {
+    const body:any = {
+        email: req.body.email
+    }
+    
 
     Administradores.create( body ).then(adminDB => {
 

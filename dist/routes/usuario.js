@@ -12,7 +12,10 @@ const token_1 = __importDefault(require("../classes/token"));
 const autenticaci_n_1 = require("../middlewares/autenticaci\u00F3n");
 require('dotenv').config();
 const userRoutes = express_1.Router();
-userRoutes.post('/send-email', (req, res) => {
+userRoutes.post('/prueba', (req, res) => {
+    console.log('esta es una prueba');
+});
+userRoutes.post('/send', (req, res) => {
     let transporter = nodemailer_1.default.createTransport({
         pool: true,
         service: 'Gmail',
@@ -136,8 +139,9 @@ userRoutes.post('/create', (req, res) => {
 });
 //crearNuevoAdministrador
 userRoutes.post('/createAdmin', (req, res) => {
-    const body = req.body;
-    body.email = req.email;
+    const body = {
+        email: req.body.email
+    };
     administradores_model_1.Administradores.create(body).then(adminDB => {
         const email = {
             email: adminDB.email

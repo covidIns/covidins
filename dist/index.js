@@ -16,7 +16,8 @@ const USER = encodeURIComponent(process.env.USER || '');
 const PASSWORD = encodeURIComponent(process.env.PASSWORD || '');
 const DB_NAME = encodeURIComponent(process.env.DB_NAME || '');
 const HOST = process.env.HOST;
-const MONGO_URI = `mongodb+srv://${USER}:${PASSWORD}@${HOST}/${DB_NAME}?retryWrites=true&w=majority`;
+const MONGO_URI = 'mongodb://localhost/instisoft';
+/* const MONGO_URI = `mongodb+srv://${USER}:${PASSWORD}@${HOST}/${DB_NAME}?retryWrites=true&w=majority`; */
 // Initializations
 const app = express_1.default();
 //Body Parser
