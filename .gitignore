@@ -1,4 +1,2 @@
-node_module
-routes
-models
-middlewares
+node_module/
+env
