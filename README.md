@@ -1,2 +1,2 @@
-# instisoft
+# covidins
 backend del proyecto
