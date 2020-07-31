@@ -46,7 +46,8 @@ function enviarMail(emailDestinatario, token, nombre) {
             { filename: 'gna.jpg', path: './assets/gna.jpg'}
         ], */
         /* template: 'index', */
-        html: `Hola ${nombreUsuario},<br> Por fabor haga click en el siguiente enlace para verificar su Email y completar su registro en instiSoft.<br><a href="+link+">Click aqui para verificar</a>`
+        html: `Hola ${nombreUsuario},<br> Por fabor haga click en el siguiente enlace para verificar su Email y completar su registro en instiSoft.<br><a href="+link+">Click aqui para verificar</a><br>
+        o bien copie y pegue en la barra de navegacón la siguiente dirección https://covidins.herokuapp.com/verify?hash=${token} y dirijase a ella`
     };
     transporter.verify((error, success) => {
         if (error)
