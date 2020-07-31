@@ -7,6 +7,8 @@ import cors from 'cors';
 import userRoutes from './routes/usuario';
 import postRoutes from './routes/post.routes';
 
+const consolidate = require('consolidate')
+
 require('dotenv').config();
 
 /* const server = new Server(); */
@@ -41,6 +43,13 @@ app.set('port', process.env.PORT || 4000);
 //Rutas de mi app
 app.use('/user', userRoutes);
 app.use('/posts', postRoutes);
+
+//motor de plantilla
+app.set('views', './views');
+
+app.engine('hbs', consolidate.handlebars);
+
+app.set('view engine', 'hbs')
 
 //conectar db
 

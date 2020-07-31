@@ -37,6 +37,7 @@ function enviarMail(emailDestinatario, token, nombre) {
     })); */
     const URL_API = process.env.URL_API;
     let link = `${URL_API}/user/verify?hash=${token}`; /* ?hash=${hash} */
+    /* let link = `http://localhost:3000/user/verify?hash=${token}`; */ /* ?hash=${hash} */
     let mailOptions = {
         from: process.env.EMAIL,
         to: emailDestinatario,
@@ -46,8 +47,8 @@ function enviarMail(emailDestinatario, token, nombre) {
             { filename: 'gna.jpg', path: './assets/gna.jpg'}
         ], */
         /* template: 'index', */
-        html: `Hola ${nombreUsuario},<br> Por fabor haga click en el siguiente enlace para verificar su Email y completar su registro en instiSoft.<br><a href="+link+">Click aqui para verificar</a><br>
-        o bien copie y pegue en la barra de navegacón la siguiente dirección y dirijase a ella: https://covidins.herokuapp.com/user/verify?hash=${token} `
+        html: `Hola ${nombreUsuario},<br> Por fabor haga click en el siguiente enlace para verificar su Email y completar su registro en instiSoft.<br><a href="${link}">Click aqui para verificar</a><br>
+        Si no lo redirigió el enlace anterior, copie y pegue en la barra de navegacón la siguiente dirección y dirijase a ella: ${URL_API}/user/verify?hash=${token} `
     };
     transporter.verify((error, success) => {
         if (error)
@@ -98,7 +99,9 @@ userRoutes.get('/verify', (req, res) => {
                     active: true,
                     roll: 'admin'
                 });
-                res.send(`<h1>Registro exitoso</h1>`);
+                res.render('verificado', {
+                    name: userDB.nombre
+                });
             });
         }
     });

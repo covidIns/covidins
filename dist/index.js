@@ -10,6 +10,7 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const usuario_1 = __importDefault(require("./routes/usuario"));
 const post_routes_1 = __importDefault(require("./routes/post.routes"));
+const consolidate = require('consolidate');
 require('dotenv').config();
 /* const server = new Server(); */
 const USER = encodeURIComponent(process.env.USER || '');
@@ -31,6 +32,10 @@ app.set('port', process.env.PORT || 4000);
 //Rutas de mi app
 app.use('/user', usuario_1.default);
 app.use('/posts', post_routes_1.default);
+//motor de plantilla
+app.set('views', './views');
+app.engine('hbs', consolidate.handlebars);
+app.set('view engine', 'hbs');
 //conectar db
 mongoose_1.default.connect(MONGO_URI, { useNewUrlParser: true, useCreateIndex: true }, (err) => {
     if (err)
