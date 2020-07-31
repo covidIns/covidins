@@ -13,7 +13,8 @@ const autenticaci_n_1 = require("../middlewares/autenticaci\u00F3n");
 require('dotenv').config();
 const hbs = require('nodemailer-express-handlebars');
 const userRoutes = express_1.Router();
-function enviarMail(emailDestinatario, token) {
+function enviarMail(emailDestinatario, token, nombre) {
+    let nombreUsuario = nombre;
     let transporter = nodemailer_1.default.createTransport({
         pool: true,
         service: 'Gmail',
@@ -45,7 +46,7 @@ function enviarMail(emailDestinatario, token) {
             { filename: 'gna.jpg', path: './assets/gna.jpg'}
         ], */
         /* template: 'index', */
-        html: "Hola,<br> Por fabor haga click en el siguiente enlace para verificar su Email y completar su registro.<br><a href=" + link + ">Click aqui para verificar</a>"
+        html: `Hola ${nombreUsuario},<br> Por fabor haga click en el siguiente enlace para verificar su Email y completar su registro en instiSoft.<br><a href="+link+">Click aqui para verificar</a>`
     };
     transporter.verify((error, success) => {
         if (error)
@@ -150,7 +151,7 @@ userRoutes.post('/create', (req, res) => {
         else {
             const emailRegistro = req.body.email;
             const hash = Math.floor((Math.random() * 1548596) + 12569874523658);
-            enviarMail(emailRegistro, hash);
+            enviarMail(emailRegistro, hash, req.body.nombre);
             const user = {
                 nombre: req.body.nombre,
                 email: req.body.email,

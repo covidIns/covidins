@@ -18,7 +18,9 @@ const userRoutes = Router();
 
 
 
-function enviarMail(emailDestinatario: any, token: number) {
+function enviarMail(emailDestinatario: any, token: number, nombre: string) {
+
+    let nombreUsuario = nombre;
     let transporter = nodemailer.createTransport({  
         pool: true,
         service: 'Gmail',
@@ -56,7 +58,7 @@ function enviarMail(emailDestinatario: any, token: number) {
             { filename: 'gna.jpg', path: './assets/gna.jpg'}
         ], */
         /* template: 'index', */
-        html: "Hola,<br> Por fabor haga click en el siguiente enlace para verificar su Email y completar su registro.<br><a href="+link+">Click aqui para verificar</a>" 
+        html: `Hola ${nombreUsuario},<br> Por fabor haga click en el siguiente enlace para verificar su Email y completar su registro en instiSoft.<br><a href="+link+">Click aqui para verificar</a>`
     }
 
     transporter.verify((error, success) => {
@@ -194,7 +196,7 @@ userRoutes.post('/create', ( req: Request, res: Response ) => {
 
             const hash = Math.floor((Math.random() *1548596) + 12569874523658);
 
-            enviarMail(emailRegistro, hash);
+            enviarMail(emailRegistro, hash, req.body.nombre);
 
             const user = {
                 nombre   : req.body.nombre,
