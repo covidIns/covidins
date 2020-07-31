@@ -33,7 +33,7 @@ const usuarioSchema = new Schema({
     },
 
     active: {
-        type: String,
+        type: Boolean,
         default: false
     },
 
@@ -64,8 +64,8 @@ interface IUsuario extends Document {
     roll: string;
     avatar: string;
     unidadAcademica: string;
-    active: String;
-    hashTokenRegistro: any
+    active: Boolean;
+    hashTokenRegistro: number
 
     compararPassword(password: string): boolean;
 }

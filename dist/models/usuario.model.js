@@ -33,7 +33,7 @@ const usuarioSchema = new mongoose_1.Schema({
         required: [true, 'La unidad académica es requerida']
     },
     active: {
-        type: String,
+        type: Boolean,
         default: false
     },
     hashTokenRegistro: {

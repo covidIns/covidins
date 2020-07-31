@@ -6,39 +6,56 @@ import nodemailer from 'nodemailer'
 import bcrypt from 'bcrypt';
 import Token from '../classes/token';
 import { verificaToken } from '../middlewares/autenticación';
+import bodyParser from 'body-parser';
 
 require('dotenv').config();
 
 
+const hbs = require('nodemailer-express-handlebars');
+
+
 const userRoutes = Router();
 
-userRoutes.post('/prueba', (req, res) => {
-    console.log('esta es una prueba');
-})
 
-userRoutes.post('/send', (req, res) => {
-    let transporter = nodemailer.createTransport({
+
+function enviarMail(emailDestinatario: any, token: number) {
+    let transporter = nodemailer.createTransport({  
         pool: true,
         service: 'Gmail',
         auth: {
-            type:'OAuth2',
+            type:'OAuth2',    
             user: process.env.EMAIL,
             /* accessToken: 'ya29.a0AfH6SMCZcnrhhGOswkqxZ7eGwopCjcRhOnOSBoG-G9NHMVnO2dcanVtDLjCT5bOL-i4uWM5w0eVu_bS5MdaE7LS5H3KsZVdc-P5DzgZ9ZX2o5UDHfF5M2P9AOrvFlZ8lACZrFzuOj6GfRfmjvOWXnfmoz1fQorWi3ZY',           
             expires: 1594998282749 + 60000, */
-            refreshToken: process.env.EMAIL_REFRESH_TOKEN,
+            refreshToken: process.env.EMAIL_REFRESH_TOKEN, 
             clientId: process.env.EMAIL_CLIENT_ID,
             clientSecret: process.env.EMAIL_CLIENT_SECRET,
             /* accessUrl: 'https://oauth2.googleapis.com/token', */
 
         }
 
-    });
+    });    
+
+    /* transporter.use('compile', hbs({
+    viewEngine: {
+        extName: ".handlebars",
+        defaultLayout: false,
+    },
+    viewPath: './views/'
+    })); */    
+
+    let link=`http://localhost:3000/user/verify?hash=${token}`; /* ?hash=${hash} */
 
     let mailOptions = {
         from: process.env.EMAIL,
-        to: 'marcosmatiaslopez.2018@gmail.com',
+        to: emailDestinatario,
         subject: 'Verificación de Email',
-        text: 'Por favor haga click en el siguiente enlace para completar el registro'
+        /* text: 'Por favor haga click en el siguiente enlace para completar el registro', */
+        /* attachments: [
+            { filename: 'gna.jpg', path: './assets/gna.jpg'}
+        ], */
+        /* template: 'index', */
+        html: "Hola,<br> Por fabor haga click en el siguiente enlace para verificar su Email y completar su registro.<br><a href="+link+">Click aqui para verificar</a>" 
     }
 
     transporter.verify((error, success) => {
@@ -59,8 +76,54 @@ userRoutes.post('/send', (req, res) => {
             console.log('Email sent!!!');
         }
     });
-})
+}
 
+
+userRoutes.get('/verify', (req: Request, res: Response)=> {
+    const hash = req.query
+    const hashDefinitivo = Number(hash.hash)
+    console.log(hashDefinitivo);
+
+    Usuario.findOne({ hashTokenRegistro: hashDefinitivo } , (err, user) => {
+        if(err) throw err;
+
+        if (!user) {
+            return res.send(`<h1>Este mail ya no es válido para registrarse, por favor realice su registro nuevamente`);
+        } else {
+            const usuario = {
+                roll: 'admin',
+                active: true
+
+            }
+            Usuario.findByIdAndUpdate( user._id, usuario,  { new: true }, (err, userDB) => {
+
+                if ( err ) throw err;
+        
+                if ( !userDB ) {
+                    return res.json({
+                        ok: false,
+                        mensaje: 'No existe un usuario con ese ID'
+                    });
+                }
+        
+                const tokenUser = ({
+                    _id: userDB._id,
+                    active: true,
+                    roll: 'admin'
+                });
+        
+                res.send(`<h1>Registro exitoso</h1>`);
+        
+            });
+            
+            
+        }
+    });
+
+})
+   
+
+    
 
 
 
@@ -125,7 +188,12 @@ userRoutes.post('/create', ( req: Request, res: Response ) => {
             })
         } else {
 
-            const hash = Math.floor((Math.random() *1548596) + 12569874523658)
+            
+            const emailRegistro = req.body.email;
+
+            const hash = Math.floor((Math.random() *1548596) + 12569874523658);
+
+            enviarMail(emailRegistro, hash);
 
             const user = {
                 nombre   : req.body.nombre,
@@ -149,8 +217,12 @@ userRoutes.post('/create', ( req: Request, res: Response ) => {
                     roll: userDB.roll,
                     unidadAcademica: userDB.unidadAcademica,
                     active: userDB.active,
-                    hashTokenRegistro: userDB.hashTokenRegistro
+                    hashTokenRegistro: userDB.hashTokenRegistro,
+
+                    
                 };
+
+                
         
                 res.json({
                     ok: true,
@@ -167,6 +239,7 @@ userRoutes.post('/create', ( req: Request, res: Response ) => {
         }
 
     })
+    
 });
 
 //crearNuevoAdministrador

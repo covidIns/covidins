@@ -11,11 +11,9 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const token_1 = __importDefault(require("../classes/token"));
 const autenticaci_n_1 = require("../middlewares/autenticaci\u00F3n");
 require('dotenv').config();
+const hbs = require('nodemailer-express-handlebars');
 const userRoutes = express_1.Router();
-userRoutes.post('/prueba', (req, res) => {
-    console.log('esta es una prueba');
-});
-userRoutes.post('/send', (req, res) => {
+function enviarMail(emailDestinatario, token) {
     let transporter = nodemailer_1.default.createTransport({
         pool: true,
         service: 'Gmail',
@@ -29,11 +27,24 @@ userRoutes.post('/send', (req, res) => {
             clientSecret: process.env.EMAIL_CLIENT_SECRET,
         }
     });
+    /* transporter.use('compile', hbs({
+    viewEngine: {
+        extName: ".handlebars",
+        defaultLayout: false,
+    },
+    viewPath: './views/'
+    })); */
+    let link = `http://localhost:3000/user/verify?hash=${token}`; /* ?hash=${hash} */
     let mailOptions = {
         from: process.env.EMAIL,
-        to: 'marcosmatiaslopez.2018@gmail.com',
+        to: emailDestinatario,
         subject: 'Verificación de Email',
-        text: 'Por favor haga click en el siguiente enlace para completar el registro'
+        /* text: 'Por favor haga click en el siguiente enlace para completar el registro', */
+        /* attachments: [
+            { filename: 'gna.jpg', path: './assets/gna.jpg'}
+        ], */
+        /* template: 'index', */
+        html: "Hola,<br> Por fabor haga click en el siguiente enlace para verificar su Email y completar su registro.<br><a href=" + link + ">Click aqui para verificar</a>"
     };
     transporter.verify((error, success) => {
         if (error)
@@ -52,6 +63,40 @@ userRoutes.post('/send', (req, res) => {
         }
         else {
             console.log('Email sent!!!');
+        }
+    });
+}
+userRoutes.get('/verify', (req, res) => {
+    const hash = req.query;
+    const hashDefinitivo = Number(hash.hash);
+    console.log(hashDefinitivo);
+    usuario_model_1.Usuario.findOne({ hashTokenRegistro: hashDefinitivo }, (err, user) => {
+        if (err)
+            throw err;
+        if (!user) {
+            return res.send(`<h1>Este mail ya no es válido para registrarse, por favor realice su registro nuevamente`);
+        }
+        else {
+            const usuario = {
+                roll: 'admin',
+                active: true
+            };
+            usuario_model_1.Usuario.findByIdAndUpdate(user._id, usuario, { new: true }, (err, userDB) => {
+                if (err)
+                    throw err;
+                if (!userDB) {
+                    return res.json({
+                        ok: false,
+                        mensaje: 'No existe un usuario con ese ID'
+                    });
+                }
+                const tokenUser = ({
+                    _id: userDB._id,
+                    active: true,
+                    roll: 'admin'
+                });
+                res.send(`<h1>Registro exitoso</h1>`);
+            });
         }
     });
 });
@@ -102,7 +147,9 @@ userRoutes.post('/create', (req, res) => {
             });
         }
         else {
+            const emailRegistro = req.body.email;
             const hash = Math.floor((Math.random() * 1548596) + 12569874523658);
+            enviarMail(emailRegistro, hash);
             const user = {
                 nombre: req.body.nombre,
                 email: req.body.email,
@@ -122,7 +169,7 @@ userRoutes.post('/create', (req, res) => {
                     roll: userDB.roll,
                     unidadAcademica: userDB.unidadAcademica,
                     active: userDB.active,
-                    hashTokenRegistro: userDB.hashTokenRegistro
+                    hashTokenRegistro: userDB.hashTokenRegistro,
                 };
                 res.json({
                     ok: true,
