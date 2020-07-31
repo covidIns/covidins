@@ -43,8 +43,9 @@ function enviarMail(emailDestinatario: any, token: number) {
     },
     viewPath: './views/'
     })); */    
+    const URL_API= process.env.URL_API
 
-    let link = process.env.EMAIL_VERIFICATION_URL; /* ?hash=${hash} */
+    let link = `${URL_API}/user/verify?hash=${token}`; /* ?hash=${hash} */
 
     let mailOptions = {
         from: process.env.EMAIL,
