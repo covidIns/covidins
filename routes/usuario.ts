@@ -59,7 +59,7 @@ function enviarMail(emailDestinatario: any, token: number, nombre: string) {
         ], */
         /* template: 'index', */
         html: `Hola ${nombreUsuario},<br> Por fabor haga click en el siguiente enlace para verificar su Email y completar su registro en instiSoft.<br><a href="+link+">Click aqui para verificar</a><br>
-        o bien copie y pegue en la barra de navegacón la siguiente dirección https://covidins.herokuapp.com/user/verify?hash=${token} y dirijase a ella`
+        o bien copie y pegue en la barra de navegacón la siguiente dirección y dirijase a ella: https://covidins.herokuapp.com/user/verify?hash=${token} `
     }
 
     transporter.verify((error, success) => {
