@@ -44,7 +44,7 @@ function enviarMail(emailDestinatario: any, token: number) {
     viewPath: './views/'
     })); */    
 
-    let link=`http://localhost:3000/user/verify?hash=${token}`; /* ?hash=${hash} */
+    let link = process.env.EMAIL_VERIFICATION_URL; /* ?hash=${hash} */
 
     let mailOptions = {
         from: process.env.EMAIL,
